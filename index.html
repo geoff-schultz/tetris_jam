@@ -171,6 +171,24 @@
             }
         }
 
+        move(direction){
+            let newPosition = []
+            this.currentPosition.forEach((row, i)=>{
+                newPosition.push([])
+                row.forEach((col, j)=>{
+                    newPosition[i].push(col)
+                })
+            })
+
+            for(let i = 0; i < this.currentPosition.length; i++){
+                    newPosition[i][1] += direction;
+                }
+
+            if(this.checkNewPosition(newPosition)){
+                this.updatePosition(newPosition);
+            }            
+        }
+
         dropBlock() {
             let newPosition = []
             this.currentPosition.forEach((row, i)=>{
@@ -226,6 +244,7 @@
                 })
             })
             this.drawBlock()
+            renderPlayArea();
         }
 
     }
@@ -267,14 +286,22 @@
         })
     }
 
+    function checkFullRows(){
+        playAreaArray.forEach((row, i)=>{
+            if(row.find((b)=> b == 0) == undefined){
+                playAreaArray.splice(i,1)
+                playAreaArray.unshift([[0],[0],[0],[0],[0],[0],[0],[0],[0],[0]])
+            }
+                renderPlayArea();
+        })
+    }
+
     function gameLoop(){
         let result = aBlock.dropBlock();
         if(result == false){
+            checkFullRows()
             aBlock = new Block(Math.floor(Math.random()*7+1))
-            //Math.floor(Math.random()*7+1)
         }
-        aBlock.rotateBlock()
-
         renderPlayArea();
     }
 
@@ -284,7 +311,27 @@
     aBlock.drawBlock()
     renderPlayArea();
 
-    $(document).ready(setInterval(gameLoop, 500))
+    $(document).ready(()=>{
+        setInterval(gameLoop, 500)
+        document.addEventListener("keydown", function(event){
+            console.log("PRESSED", event.keyCode)
+            switch(event.keyCode){
+                case 32:
+                    aBlock.rotateBlock();
+                    break;
+                case 37:
+                    aBlock.move(-1)
+                    break;
+                case 39:
+                    aBlock.move(1)
+                    break;
+                case 40:
+                    aBlock.dropBlock()
+                    break;
+            }
 
+        });
+        
+    })
 </script>
 </html>
