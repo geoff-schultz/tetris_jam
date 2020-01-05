@@ -18,48 +18,47 @@
         border-radius: 10px;
         display: inline-block;
     }
-.square {
-    border: 1px solid rgb(20, 20, 20);
-    border-radius: 3px;
-    display: inline-block;
-    width: 2em;
-    height: 2em;
-}
+    .square {
+        border: 1px solid rgb(20, 20, 20);
+        border-radius: 3px;
+        display: inline-block;
+        width: 2em;
+        height: 2em;
+    }
+    .block0 {
+        background-color: black;
+    }
 
-.block0 {
-    background-color: black;
-}
+    .block1 {
+        background-color: red;
+    }
 
-.block1 {
-    background-color: red;
-}
+    .block2 {
+        background-color: yellow;
+    }
 
-.block2 {
-    background-color: yellow;
-}
+    .block3 {
+        background-color: purple;
+    }
 
-.block3 {
-    background-color: purple;
-}
+    .block4 {
+        background-color: green;
+    }
 
-.block4 {
-    background-color: green;
-}
+    .block5 {
+        background-color: blue;
+    }
 
-.block5 {
-    background-color: blue;
-}
+    .block6 {
+        background-color: white;
+    }
 
-.block6 {
-    background-color: white;
-}
-
-.block7 {
-    background-color: yellowgreen;
-}
+    .block7 {
+        background-color: yellowgreen;
+    }
 </style>
 <body>
-    <h1>TetrisJam</h1>
+    <h1>Tetris Jam</h1>
     <div id="playarea">
     </div>    
 </body>
@@ -72,6 +71,13 @@
         constructor(blockType){
             this.blockType = blockType;
             this.currentPosition = this.blockTypes[this.blockType]["pattern"];
+            this.currentPosition.forEach((i)=>{
+                   if(playAreaArray[i[0]][i[1]] != 0){
+                       console.log("RIP Game Over")
+                       clearInterval(runtime);
+                   }
+            })
+            this.drawBlock()
         }
 
         blockTypes = [
@@ -254,8 +260,6 @@
     //variables:
     let playAreaArray = [];
     let columns = "abcdefghij"
-    let aBlock = new Block(Math.floor(Math.random()*7+1))
-    // Math.floor(Math.random()*7+1)
 
 
 
@@ -296,6 +300,10 @@
         })
     }
 
+    function gameover(){
+        clearInterval();
+    }
+
     function gameLoop(){
         let result = aBlock.dropBlock();
         if(result == false){
@@ -307,14 +315,15 @@
 
     //function calls and runtime
 
-    buildPlayArea();
-    aBlock.drawBlock()
-    renderPlayArea();
+
 
     $(document).ready(()=>{
-        setInterval(gameLoop, 500)
+        buildPlayArea();
+        aBlock = new Block(Math.floor(Math.random()*7+1))
+        renderPlayArea();
+        runtime = setInterval(gameLoop, 500)
         document.addEventListener("keydown", function(event){
-            console.log("PRESSED", event.keyCode)
+            // console.log("PRESSED", event.keyCode)
             switch(event.keyCode){
                 case 32:
                     aBlock.rotateBlock();
